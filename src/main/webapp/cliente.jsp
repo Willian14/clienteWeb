@@ -6,17 +6,30 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Cadastro de Clientes</title>
+<script type="text/javascript">
+	function confirmaExclusao(indice){
+		if(window.confirm("Tem certeza que deseja exlcuir este Cliente?")){
+			location.href="clienteServlet?i="+indice+"&acao=exc";
+		}
+	}
+
+</script>
 </head>
 <body>
 
 	<div>
 		<%
 			Object msg = request.getAttribute("msg");
+			Object msgEx = request.getAttribute("msgExc");
 			
 			if(msg != null){
 				String mensagem = (String)msg;
 				out.print("<h1>" + mensagem + "</h1>");
+			}
+			if(msgEx != null){
+				String msgExc = msgEx.toString();
+				out.print("<h1>" + msgExc + "</h1>");
 			}
 		
 		%>
@@ -35,9 +48,16 @@
 		List<Cliente> lista = (List<Cliente>) request.getAttribute("lista");
 		
 		if(lista != null){
+			int i = 0;
 			for(Cliente cli : lista){
-				out.print("Nome: " + cli.getNome() + "<br/>" + "E-mail: " + cli.getEmail() + "<br/><br/> ");
+				out.print("Nome: " + cli.getNome() + "<br/>" + "E-mail: " + cli.getEmail()
+				+ "<a href='javascript:confirmaExclusao("+i+")'>excluir</a>"+
+				"|<a href='#'>Editar</a>"+ "<br/><br/> ");
+				i++;
+				//clienteServlet?i=" + i + "&acao=exc' name='linkExcluir'
 			}
+			
+			
 		}
 	
 		

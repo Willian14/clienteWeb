@@ -13,15 +13,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import entity.Cliente;
+import service.GerenciadorDeLista;
 				
 @WebServlet(urlPatterns = { "/cliente.do", "/clienteServlet" })
 public class ClienteServlet extends HttpServlet {
 	
-	private List<Cliente> lista;
+	GerenciadorDeLista gerenciador = new GerenciadorDeLista();
 	
 	public ClienteServlet() {
 		System.out.println("Construindo Servlet");
-		lista = new ArrayList<Cliente>();
+		//lista = new ArrayList<Cliente>();
+		
 	}
 	
 	@Override
@@ -44,8 +46,20 @@ public class ClienteServlet extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String indice = req.getParameter("i");
+		String acao = req.getParameter("acao");
+		
+		if(indice!=null && indice!="" && acao.equals("exc") ) {
+			int i = (Integer.parseInt(indice));
+			gerenciador.excluir(i);
+			req.setAttribute("msgExc", "Cliente excluido com sucesso!");
+		}
+		
+		if(indice!=null && indice!="" && acao.equals("edit")) {
+			
+		}
 		RequestDispatcher rd = req.getRequestDispatcher("cliente.jsp");
-		req.setAttribute("lista", lista);
+		req.setAttribute("lista",gerenciador.getLista() );
 		rd.forward(req, resp);
 	
 	}
@@ -53,11 +67,17 @@ public class ClienteServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String nome = req.getParameter("nome");
 		String email = req.getParameter("email");
+		String id = req.getParameter("id");
 		Cliente cli = new Cliente(nome, email);
-		lista.add(cli);
+		if(id != null && id != "") {
+			int indice = Integer.parseInt(id);
+			gerenciador.alterar(cli,indice);
+		}else {
+			gerenciador.adicionar(cli);
+		}
 		String msg = "Cadastrado com sucesso!";
 		RequestDispatcher rd = req.getRequestDispatcher("cliente.jsp");
-		req.setAttribute("lista", lista);
+		req.setAttribute("lista", gerenciador.getLista());
 		req.setAttribute("msg", msg);
 		rd.forward(req, resp);
 				
