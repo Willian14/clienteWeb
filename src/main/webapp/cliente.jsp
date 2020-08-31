@@ -1,67 +1,71 @@
 <%@page import="entity.Cliente"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
+<%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
 <html>
 <head>
 <meta charset="ISO-8859-1">
 <title>Cadastro de Clientes</title>
+
 <script type="text/javascript">
-	function confirmaExclusao(indice){
-		if(window.confirm("Tem certeza que deseja exlcuir este Cliente?")){
-			location.href="clienteServlet?i="+indice+"&acao=exc";
+	function confirma(i) {
+		if (window.confirm("Tem certeza que deseja excluir o cliente?")) {
+			location.href="clienteServlet?i=" + i + "&acao=exc";
 		}
 	}
-
+	function editar(i){
+		location.href="clienteServlet?i=" + i + "&acao=edit";
+	}
 </script>
 </head>
 <body>
+	
 
-	<div>
-		<%
-			Object msg = request.getAttribute("msg");
-			Object msgEx = request.getAttribute("msgExc");
 			
-			if(msg != null){
-				String mensagem = (String)msg;
-				out.print("<h1>" + mensagem + "</h1>");
-			}
-			if(msgEx != null){
-				String msgExc = msgEx.toString();
-				out.print("<h1>" + msgExc + "</h1>");
-			}
 		
-		%>
-	</div>
+		
+	
 
-	<h1>Cadastro de Cliente</h1>
+
+	<h1>Cadastro de Cleintes</h1>
+	
 	<form method="post" action="clienteServlet">
-		<label>Nome</label><br/>
-		<input type="text" name="nome"/><br/><br/>
-		<label>email</label><br/>
-		<input type="text" name="email"/><br/>
-		<input type="submit" value="salvar"/>
+		<div>
+			${requestScope.msgAdd}
+			${requestScope.msgExc}
+			
+	</div>
+		<input type=hidden value="${requestScope.idCli}" name="id" /><br /> <label>Nome: </label><br />
+		<input type="text" value="${requestScope.cliente.nome}" name="nome" /><br /> <label>Email:</label><br />
+		<input type="text" value="${requestScope.cliente.email }" name="email" /><br />
+		<br /> <input type="submit" value="Salvar" name="btSalvar" /><br />
+		<br />
+
+
 	</form>
-	
-	<%
-		List<Cliente> lista = (List<Cliente>) request.getAttribute("lista");
+	<table border="1px>">
+		<tr>
+			<th>Nome</th>
+			<th>E-mail</th>
+			<th>Ação</th>
+		</tr>
+<c:set var="i" value="0"/>		
+<c:forEach items="${requestScope.lista}" var="c">
 		
-		if(lista != null){
-			int i = 0;
-			for(Cliente cli : lista){
-				out.print("Nome: " + cli.getNome() + "<br/>" + "E-mail: " + cli.getEmail()
-				+ "<a href='javascript:confirmaExclusao("+i+")'>excluir</a>"+
-				"|<a href='#'>Editar</a>"+ "<br/><br/> ");
-				i++;
-				//clienteServlet?i=" + i + "&acao=exc' name='linkExcluir'
-			}
+			<tr>
+				<td>${c.nome}</td>
+				<td>${c.email}</td>
+				<td><a href="javascript:confirma(${i})">Excluir</a>
+			||<a href="javascript:editar(${i})">Editar</a></td>
 			
-			
-		}
+			</tr>
+		<c:set var="i" value="${i+1}"/>
+</c:forEach>
 	
-		
-	%>
-	
+	</table>
+
+
 </body>
 </html>

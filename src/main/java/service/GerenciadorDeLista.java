@@ -8,7 +8,7 @@ import entity.Cliente;
 public class GerenciadorDeLista {
 
 	private static List<Cliente> lista;
-	private Cliente c;
+	
 	
 	public GerenciadorDeLista() {
 		lista = new ArrayList<Cliente>();
@@ -34,11 +34,11 @@ public class GerenciadorDeLista {
 		lista.remove(i);
 	}
 	
-	public Cliente buscarPorId(int id) {
-		return c = lista.get(id);
+	public Cliente buscarPorId(Integer id) {
+		return lista.get(id);
 	}
 	
-	public void alterar(Cliente cli,int id) {
+	public void alterar(Cliente cli,Integer id) {
 		lista.get(id).setNome(cli.getNome());
 		lista.get(id).setEmail(cli.getEmail());
 	}
